@@ -4,9 +4,9 @@ import { prisma } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
-    const { username, password } = await request.json();
+    const { name, password } = await request.json();
 
-    if (!username || !password) {
+    if (!name || !password) {
       return NextResponse.json(
         { error: "아이디와 비밀번호를 입력해주세요." },
         { status: 400 }
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     }
 
     const existingUser = await prisma.user.findUnique({
-      where: { username },
+      where: { name },
     });
 
     if (existingUser) {
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
     const user = await prisma.user.create({
       data: {
-        username,
+        name,
         password: hashedPassword,
       },
     });

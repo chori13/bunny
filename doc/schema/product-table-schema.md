@@ -19,3 +19,6 @@
 
 ## 관련 기능
 - [상품 등록 명세](../spec/product-register.md)
+- [상품 목록 명세](../spec/product-list.md)
+- [상품 상세 명세](../spec/product-detail.md)
+- [상품 수정 명세](../spec/product-edit.md)

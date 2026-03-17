@@ -24,6 +24,8 @@ import {
   ScrollText,
   Settings,
   TrendingUp,
+  Bug,
+  Github,
 } from "lucide-react";
 
 const navItems = [
@@ -40,6 +42,8 @@ const navItems = [
   { label: "사이트 설정", href: "/admin/settings", icon: Settings },
   { label: "ERD", href: "/admin/erd", icon: Database },
   { label: "API 테스트", href: "/admin/api-test", icon: FlaskConical },
+  { label: "Sentry 모니터링", href: "/admin/sentry", icon: Bug },
+  { label: "GitHub 관리", href: "/admin/github", icon: Github },
 ];
 
 const quickLinks = [

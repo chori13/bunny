@@ -7,16 +7,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        username: { label: "아이디", type: "text" },
+        name: { label: "아이디", type: "text" },
         password: { label: "비밀번호", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
+        if (!credentials?.name || !credentials?.password) {
           throw new Error("아이디와 비밀번호를 입력해주세요.");
         }
 
         const user = await prisma.user.findUnique({
-          where: { username: credentials.username as string },
+          where: { name: credentials.name as string },
         });
 
         if (!user) {
@@ -33,7 +33,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         return {
           id: user.id,
-          name: user.username,
+          name: user.name,
+          role: user.role,
         };
       },
     }),
@@ -45,12 +46,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = (user as { role: string }).role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },

@@ -7,6 +7,7 @@
 - 아이디 입력 필드
 - 비밀번호 입력 필드
 - 로그인 버튼
+- 회원가입 페이지 링크
 
 ## 동작 흐름
 
@@ -14,3 +15,14 @@
 2. 회원 테이블에서 아이디와 비밀번호를 검증한다.
    - **실패**: 아이디 또는 비밀번호가 일치하지 않으면 "아이디 또는 비밀번호가 잘못되었습니다." 알럿을 노출한다.
    - **성공**: 아이디와 비밀번호가 일치하면 My 페이지로 이동한다.
+
+## 인증 방식
+- NextAuth.js Credentials Provider 사용
+- JWT 세션 전략
+- 비밀번호는 bcrypt로 비교
+
+## 관련 파일
+- 페이지: `src/app/login/page.tsx`
+- API: `src/app/api/auth/[...nextauth]/route.ts`
+- 인증 설정: `src/lib/auth.ts`
+- 테이블: [회원 테이블 스키마](../schema/user-table-schema.md)

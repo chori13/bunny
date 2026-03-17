@@ -9,13 +9,18 @@ datasource db {
 
 // 회원
 model User {
-  id       String @id @default(cuid())
-  username String @unique
+  id       String  @id @default(cuid())
+  name     String  @unique
+  email    String?
   password String
+  role     Role    @default(USER)
 
   orders    Order[]
   reviews   Review[]
   cartItems CartItem[]
+  posts     Post[]
+  comments  Comment[]
+  wishlists Wishlist[]
 }
 
 // 상품
@@ -30,6 +35,7 @@ model Product {
   orderItems OrderItem[]
   reviews    Review[]
   cartItems  CartItem[]
+  wishlists  Wishlist[]
 }
 
 // 장바구니
@@ -86,6 +92,103 @@ model Review {
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// 이벤트
+model Event {
+  id        String      @id @default(cuid())
+  title     String
+  desc      String
+  period    String
+  icon      String
+  color     String?
+  status    EventStatus @default(ACTIVE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+// 공지사항
+model Notice {
+  id        String       @id @default(cuid())
+  title     String
+  content   String
+  type      NoticeType   @default(GENERAL)
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+enum NoticeType {
+  GENERAL
+  POPUP
+  EMAIL
+}
+
+// 찜하기
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+// 커뮤니티 게시글
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments Comment[]
+}
+
+// 댓글
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+// 감사 로그
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String   // ORDER_STATUS_CHANGE, USER_ROLE_CHANGE, REVIEW_DELETE, PRODUCT_CREATE, etc.
+  targetType String   // Order, User, Review, Product, Event, Notice
+  targetId   String
+  detail     String?  // JSON string with before/after or extra info
+  adminId    String
+  adminName  String
+  createdAt  DateTime @default(now())
+
+  @@index([action])
+  @@index([targetType])
+  @@index([createdAt])
+}
+
+// 사이트 설정 (key-value store)
+model SiteSetting {
+  key       String   @id
+  value     String   // JSON string
+  updatedAt DateTime @updatedAt
+}
+
+enum EventStatus {
+  ACTIVE
+  UPCOMING
+  ENDED
 }
 
 enum Role {
